@@ -30,7 +30,6 @@ jobs:
             bundle exec jekyll build --config _config.yml --destination ~/cos-portfolio
       
       # Store compiled cache (persisted across jobs)
-      - run: "Save site"
       - save_cache:
           key: cos-portfolio-dist-{{ checksum ".circle-sha" }}
           paths:
