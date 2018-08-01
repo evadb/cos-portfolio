@@ -43,6 +43,13 @@ jobs:
       - run:
           name: Install awscli
           command: sudo pip install awscli
+
+      # Restore compiled cache (persisted across jobs)
+      - run: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - cos-portfolio-dist-{{ checksum ".circle-sha" }}
+
       - run:
           name: Deploy to S3
           command: aws s3 sync /home/circleci/cos-portfolio s3://www.cosplayindisarray.com/ --delete
