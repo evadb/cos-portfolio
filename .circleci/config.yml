@@ -42,11 +42,11 @@ jobs:
 
     steps:
       - run:
-        name: Install awscli
-        command: sudo pip install awscli
+          name: Install awscli
+          command: sudo pip install awscli
       - run:
-        name: Deploy to S3
-        command: aws s3 home/circleci/cos-portfolio s3://www.cosplayindisarray.com/ --delete
+          name: Deploy to S3
+          command: aws s3 home/circleci/cos-portfolio s3://www.cosplayindisarray.com/ --delete
 
 workflows:
   version: 2
