@@ -39,14 +39,13 @@ jobs:
   deploy:
     docker:
       - image: circleci/python:2.7-jessie
-    working_directory: ~/website
     steps:
       - run:
           name: Install awscli
           command: sudo pip install awscli
       - run:
           name: Deploy to S3
-          command: aws s3 sync cos-portfolio s3://www.cosplayindisarray.com/ --delete
+          command: aws s3 sync /home/circleci/cos-portfolio s3://www.cosplayindisarray.com/ --delete
 
 workflows:
   version: 2
