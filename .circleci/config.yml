@@ -1,0 +1,37 @@
+version: 2
+jobs: 
+  build:
+    docker:
+      - image: circleci/ruby:2.4
+    working_directory: ~/website
+    steps:
+      - checkout
+
+    # Restore bundle cache (persisted across builds)
+      - restore_cache:
+          keys:
+            - cos-vendor-bundle-{{ checksum "Gemfile.lock" }}
+
+    # Bundle install
+      - run:
+          name: "Bundle install"
+          command: bundle install --path vendor/bundle
+
+     # Store bundle cache (persisted across builds)
+      - save_cache:
+          key: cos-vendor-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      # Build compiled sites
+      - run:
+          name: "Build site"
+          command: |
+            bundle exec jekyll build --config _config.yml --destination ~/cos-portfolio
+      
+      # Store compiled cache (persisted across jobs)
+      - run: echo $CIRCLE_SHA1 > .circle-sha
+      - save_cache:
+          key: cos-portfolio-dist-{{ checksum ".circle-sha" }}
+          paths:
+            ~/cos-portfolio
