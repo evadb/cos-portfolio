@@ -30,8 +30,32 @@ jobs:
             bundle exec jekyll build --config _config.yml --destination ~/cos-portfolio
       
       # Store compiled cache (persisted across jobs)
-      - run: echo $CIRCLE_SHA1 > .circle-sha
+      - run: "Save site"
       - save_cache:
           key: cos-portfolio-dist-{{ checksum ".circle-sha" }}
           paths:
             ~/cos-portfolio
+
+    deploy:
+      docker:
+        - image: circleci/python:2.7-jessie
+
+      steps:
+        - run:
+          name: Install awscli
+          command: sudo pip install awscli
+        - run:
+          name: Deploy to S3
+          command: aws s3 home/circleci/cos-portfolio s3://www.cosplayindisarray.com/ --delete
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
